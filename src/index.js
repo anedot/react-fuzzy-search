@@ -157,18 +157,6 @@ export default class FuzzySearch extends Component {
     };
   }
 
-  getResultsTemplate() {
-    return this.state.results.map((val, i) => {
-      const style =
-        this.state.selectedIndex === i ? styles.selectedResultStyle : styles.resultsStyle;
-      return (
-        <div key={i} style={style}>
-          {val.title}
-        </div>
-      );
-    });
-  }
-
   handleChange(e) {
     this.setState({
       results: this.fuse.search(e.target.value).slice(0, this.props.maxResults - 1),
@@ -202,7 +190,7 @@ export default class FuzzySearch extends Component {
       this.setState({
         results: [],
         selectedIndex: 0,
-        value: results[this.state.selectedIndex].item.value,
+        value: results[this.state.selectedIndex].item ? results[this.state.selectedIndex].item.value : '',
       });
     }
   }
@@ -216,7 +204,7 @@ export default class FuzzySearch extends Component {
     this.setState({
       results: [],
       selectedIndex: 0,
-      value: results[this.state.selectedIndex].item.value,
+      value: results[this.state.selectedIndex].item ? results[this.state.selectedIndex].item.value : '',
     });
   }
 
