@@ -142,4 +142,21 @@ describe('<FuzzySearch />', () => {
     // Each result should have a 'matches' array now with `includeMatches`
     expect(wrapper.state('results')[0].item.title).to.equal('The Great Gatsby');
   });
+
+  it('should display all options when isFilter passed in', () => {
+    const onChange = sinon.spy();
+    const wrapper = mount(
+      <FuzzySearch
+        keyForDisplayName="author"
+        list={list}
+        onSelect={onChange}
+        keys={['author', 'title']}
+        options={{ includeMatches: true }}
+        isFilter
+      />,
+    );
+
+    // Each result should have a 'matches' array now with `includeMatches`
+    expect(wrapper.state('results').length).to.not.equal(0);
+  });
 });

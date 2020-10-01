@@ -70,6 +70,7 @@ export default class FuzzySearch extends Component {
     distance: PropTypes.number,
     id: PropTypes.string,
     include: PropTypes.array,
+    isFilter: PropTypes.bool,
     maxPatternLength: PropTypes.number,
     onSelect: PropTypes.func.isRequired,
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -93,6 +94,7 @@ export default class FuzzySearch extends Component {
     caseSensitive: false,
     distance: 100,
     include: [],
+    isFilter: false,
     keyForDisplayName: 'title',
     location: 0,
     width: 430,
@@ -112,7 +114,8 @@ export default class FuzzySearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      results: [],
+      isOpen: false,
+      results:  props.isFilter ? props.list : [],
       selectedIndex: 0,
       selectedValue: {},
       value: '',
@@ -159,7 +162,7 @@ export default class FuzzySearch extends Component {
 
   handleChange(e) {
     this.setState({
-      results: this.fuse.search(e.target.value).slice(0, this.props.maxResults - 1),
+      results: this.props.isFilter && !e.target.value ? this.props.list : this.fuse.search(e.target.value).slice(0, this.props.maxResults - 1),
       value: e.target.value,
     });
   }
@@ -202,6 +205,7 @@ export default class FuzzySearch extends Component {
       this.props.onSelect(results[clickedIndex]);
     }
     this.setState({
+      isOpen: false,
       results: [],
       selectedIndex: 0,
       value: results[this.state.selectedIndex].item ? results[this.state.selectedIndex].item.value : '',
@@ -209,7 +213,7 @@ export default class FuzzySearch extends Component {
   }
 
   render() {
-    const { autoFocus, className, list, placeholder, resultsTemplate, width } = this.props;
+    const { autoFocus, className, isFilter, list, placeholder, resultsTemplate, width } = this.props;
 
     // Update the search space list
     if (this.fuse.setCollection && list) {
@@ -228,9 +232,14 @@ export default class FuzzySearch extends Component {
             style={styles.searchBoxStyle}
             type="text"
             value={this.state.value}
+            onClick={() => {
+              this.setState({
+                isOpen: isFilter ? true : false,
+              })
+            }}
           />
         </div>
-        {this.state.results && this.state.results.length > 0 && (
+        {this.state.isOpen && this.state.results && this.state.results.length > 0 && (
           <div style={styles.resultsWrapperStyle}>
             {resultsTemplate(this.props, this.state, styles, this.handleMouseClick)}
           </div>
