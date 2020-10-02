@@ -56,7 +56,7 @@ function defaultResultsTemplate(props, state, styl, clickHandler) {
   return state.results.map((val, i) => {
     const style = state.selectedIndex === i ? styl.selectedResultStyle : styl.resultsStyle;
     return (
-      <div key={i} style={style} onClick={() => clickHandler(i)}>
+      <div key={i} style={style} onClick={() => { clickHandler(i) }}>
         {val[props.keyForDisplayName]}
       </div>
     );
